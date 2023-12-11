@@ -49,6 +49,7 @@ class Game:
         self.players.add(self.player)
         self.home_font = pg.font.SysFont('Hack', 30)
         self.play_text = self.home_font.render('Play', True, pg.Color('white'))
+        self.end_text = self.home_font.render('The Game\'s Complete', True, pg.Color('White'))
         self.levels = [[[100, 100, .4], [400, 400, .5], [300, 200, 1]], [[400, 500, .9], [300, 200, .8]]]
         self.level = 0
         self.setup_level(self.level)
@@ -72,7 +73,10 @@ class Game:
                 self.player.fire(self.enemies)
                 if len(self.enemies) <= 0:
                     self.level += 1
-                    self.setup_level(self.level)
+                    if self.level == len(self.levels):
+                        self.state = 'end'
+                    else:
+                        self.setup_level(self.level)
     
     def draw(self):
         if self.state == 'home':
@@ -85,6 +89,9 @@ class Game:
             self.player.update()
             self.enemies.draw(self.screen)
             self.enemies.update()
+        elif self.state == 'end':
+            self.screen.fill('black')
+            self.screen.blit(self.end_text, (100, 100))
 
     def run(self):
         while True:
